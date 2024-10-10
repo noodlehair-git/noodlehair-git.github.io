@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Puzzle Matching Game</title>
+  <style>
+    body {
+      font-family: 'Comic Sans MS', cursive;
+      background-color: #f3f4f6;
+      text-align: center;
+    }
+    .game-board {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      max-width: 800px;
+      margin: 20px auto;
+    }
+    .puzzle-piece {
+      width: 100px;
+      height: 100px;
+      margin: 10px;
+      background-color: #ffda79;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: grab;
+      transition: transform 0.3s ease;
+    }
+    .puzzle-piece:hover {
+      transform: scale(1.1);
+    }
+    .message {
+      font-size: 1.5em;
+      color: #333;
+      margin: 20px;
+    }
+    .progress-bar-container {
+      width: 50%;
+      height: 30px;
+      background-color: #d1d5db;
+      border-radius: 15px;
+      margin: 20px auto;
+    }
+    .progress-bar {
+      width: 0%;
+      height: 100%;
+      background-color: #34d399;
+      border-radius: 15px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 1em;
+      border-radius: 5px;
+      background-color: #34d399;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Pair the Puzzle Pieces!</h1>
+  <div class="game-board">
+    <!-- Puzzle pieces will be dynamically created here -->
+  </div>
+  <div class="progress-bar-container">
+    <div class="progress-bar"></div>
+  </div>
+  <div class="message"></div>
+  <button onclick="resetGame()">Reset Game</button>
+
+  <script>
+    const pairs = [
+      { item1: 'Peanut Butter', item2: 'Bread' },
+      { item1: 'Our Day', item2: 'May 10' },
+      { item1: 'Schatzi', item2: 'Schnitzie' },
+      { item1: 'First Kiss', item2: 'Amsterdam' },
+      { item1: 'Tea', item2: 'Rex' },
+      { item1: 'Everything', item2: 'Sesame' },
+      { item1: 'My Heaven', item2: 'Feli\'s Arms' },
+      { item1: 'Call it', item2: 'Magic' },
+      { item1: 'Rice', item2: 'Cakes' },
+      { item1: 'You', item2: 'My World' }
+    ];
+    
+    let matches = 0;
+    let firstSelection = null;
+
+    function shufflePieces() {
+      const singleItems = pairs.map(pair => [
+        { item: pair.item1, match: pair.item2 },
+        { item: pair.item2, match: pair.item1 }
+      ]).flat();
+
+      const shuffled = singleItems
+        .map(item => ({ ...item, id: Math.random() }))
+        .sort((a, b) => a.id - b.id);
+      
+      return shuffled;
+    }
+
+    function displayMessage(msg) {
+      const message = document.querySelector('.message');
+      message.textContent = msg;
+    }
+
+    function updateProgressBar() {
+      const progressBar = document.querySelector('.progress-bar');
+      const progress = (matches / 10) * 100;
+      progressBar.style.width = `${progress}%`;
+
+      if (matches === 10) {
+        displayMessage('Congratulations! Happy 26 Honeypot!');
+      }
+    }
+
+    function createBoard() {
+      const board = document.querySelector('.game-board');
+      board.innerHTML = '';
+      matches = 0;
+      updateProgressBar();
+      
+      const shuffledPieces = shufflePieces();
+      shuffledPieces.forEach((piece) => {
+        const div = document.createElement('div');
+        div.classList.add('puzzle-piece');
+        div.textContent = piece.item;  // Assign the actual item name
+        div.draggable = true;
+        div.dataset.match = piece.match;  // Store the matching item
+
+        div.ondragstart = (event) => dragStart(event);
+        div.ondragover = (event) => event.preventDefault(); // Allow dropping
+        div.ondrop = (event) => drop(event, div);
+
+        board.appendChild(div);
+      });
+    }
+
+    let draggedElement = null;
+
+    function dragStart(event) {
+      draggedElement = event.target;
+      event.target.style.backgroundColor = '#fca5a5'; // Highlight when dragging
+    }
+
+    function drop(event, targetElement) {
+      if (draggedElement && draggedElement !== targetElement && draggedElement.dataset.match === targetElement.textContent) {
+        displayMessage('Great match! ' + draggedElement.textContent + ' + ' + targetElement.textContent);
+        draggedElement.style.backgroundColor = '#4ade80';
+        targetElement.style.backgroundColor = '#4ade80';
+        matches++;
+        updateProgressBar();
+        draggedElement.draggable = false;
+        targetElement.draggable = false;
+        draggedElement = null;
+      } else {
+        displayMessage('Oops! Try again.');
+        draggedElement.style.backgroundColor = '#ffda79';
+        draggedElement = null;
+      }
+    }
+
+    function resetGame() {
+      displayMessage('');
+      createBoard();
+    }
+
+    // Initialize the game
+    resetGame();
+  </script>
+</body>
+</html>
