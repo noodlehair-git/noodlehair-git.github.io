@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Build Your Cake</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <h1>Build Your Birthday Cake! 🎂</h1>
+        <div class="cake-base" id="cake-base"></div>
+
+        <div class="ingredients-container">
+            <h3>Choose your cake layers and toppings:</h3>
+            <div id="ingredients">
+                <div class="ingredient" draggable="true" data-name="Cake Layer">🍰 Cake Layer</div>
+                <div class="ingredient" draggable="true" data-name="Cream Layer">🍦 Cream Layer</div>
+                <div class="ingredient" draggable="true" data-name="Chocolate Drip">🍫 Chocolate Drip</div>
+                <div class="ingredient" draggable="true" data-name="Sprinkles">🍬 Sprinkles</div>
+                <div class="ingredient" draggable="true" data-name="Cherry">🍒 Cherry on Top</div>
+            </div>
+        </div>
+
+        <div id="message-box"></div>
+
+        <button id="complete-button" class="button">Complete Cake</button>
+        <button id="reset-button" class="button">Reset Cake</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
